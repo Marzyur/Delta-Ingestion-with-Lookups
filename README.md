@@ -265,3 +265,7 @@ customer-ingestion-api/
 ├── vercel.json
 └── README.md
 ```
+## Live Endpoints
+
+- Health: https://customer-ingestion-api.vercel.app/api/v1/health
+- Lookups: https://customer-ingestion-api.vercel.app/api/v1/lookups
