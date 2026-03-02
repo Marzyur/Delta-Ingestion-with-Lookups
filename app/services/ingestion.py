@@ -65,8 +65,15 @@ async def _process_batch(
 
     # ── Step 1: Resolve lookup codes → IDs (O(1) per record) ─────────────────
     resolved: list[tuple[str, str, str | None, int, int]] = []  # (ext_id, name, email, country_id, status_id)
+    seen_external_ids: set[str] = set()
 
     for rec in batch:
+        ext_id = rec.external_id
+        if ext_id in seen_external_ids:
+            failed.append(FailedRecord(external_id=ext_id, reason="Duplicate external_id in payload"))
+            continue
+        seen_external_ids.add(ext_id)
+
         country_id = cache.resolve_country(rec.country_code)
         status_id = cache.resolve_status(rec.status_code)
 
@@ -178,10 +185,10 @@ async def ingest_customers(records: list[CustomerRecord]) -> IngestResponse:
         # Use a fresh session just for the cache load
         async with engine.connect() as cache_conn:
             result_countries = await cache_conn.execute(text("SELECT id, code FROM countries"))
-            cache.countries = {row.code: row.id for row in result_countries}
+            cache.countries = {str(row.code).upper(): row.id for row in result_countries}
 
             result_statuses = await cache_conn.execute(text("SELECT id, code FROM customer_status"))
-            cache.statuses = {row.code: row.id for row in result_statuses}
+            cache.statuses = {str(row.code).upper(): row.id for row in result_statuses}
 
         logger.info(
             "Lookup cache loaded: %d countries, %d statuses",

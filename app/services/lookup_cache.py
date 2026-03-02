@@ -30,18 +30,18 @@ class LookupCache:
     async def load(self, session: AsyncSession) -> None:
         """(Re)load all lookup tables from DB."""
         countries_rows = await session.execute(text("SELECT id, code FROM countries"))
-        self.countries = {row.code: row.id for row in countries_rows}
+        self.countries = {str(row.code).upper(): row.id for row in countries_rows}
 
         status_rows = await session.execute(text("SELECT id, code FROM customer_status"))
-        self.statuses = {row.code: row.id for row in status_rows}
+        self.statuses = {str(row.code).upper(): row.id for row in status_rows}
 
         self._loaded_at = time.monotonic()
 
     def resolve_country(self, code: str) -> int | None:
-        return self.countries.get(code)
+        return self.countries.get(code.upper())
 
     def resolve_status(self, code: str) -> int | None:
-        return self.statuses.get(code)
+        return self.statuses.get(code.upper())
 
     @property
     def is_empty(self) -> bool:

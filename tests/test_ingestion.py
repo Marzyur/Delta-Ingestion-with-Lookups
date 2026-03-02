@@ -28,7 +28,7 @@ def make_record(**kwargs) -> CustomerRecord:
 def cache() -> LookupCache:
     c = LookupCache()
     c.countries = {"US": 1, "GB": 2}
-    c.statuses = {"active": 1, "inactive": 2}
+    c.statuses = {"ACTIVE": 1, "INACTIVE": 2}
     return c
 
 
