@@ -10,6 +10,5 @@ if PROJECT_ROOT not in sys.path:
 # Provide a default DATABASE_URL for import-time settings in tests
 os.environ.setdefault(
     "DATABASE_URL",
-    'postgresql+asyncpg://neondb_owner:npg_HtAvDb9PLW5r@ep-misty-sound-airy8nhs-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require'
-
+    "postgresql+asyncpg://user:pass@localhost:5432/testdb",
 )
