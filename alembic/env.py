@@ -1,4 +1,5 @@
 import os
+import sys
 from logging.config import fileConfig
 
 from alembic import context
@@ -6,6 +7,11 @@ from sqlalchemy import engine_from_config, pool
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# Ensure project root is on sys.path when running Alembic directly
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 config = context.config
 config.set_main_option("sqlalchemy.url", os.environ["DATABASE_URL"].replace("+asyncpg", ""))
